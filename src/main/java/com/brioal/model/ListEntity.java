@@ -9,7 +9,7 @@ import javax.persistence.Table;
 /**
  * email:brioal@foxmail.com
  * github:https://github.com/Brioal
- * Created by Brioal on 2017/7/18.
+ * Created by Brioal on 2017/7/19.
  */
 
 @Entity
@@ -19,6 +19,7 @@ public class ListEntity {
     private long mClassifyid;
     private String mDetail;
     private Long mUserid;
+    private Integer mIsdone;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -60,19 +61,28 @@ public class ListEntity {
         mUserid = userid;
     }
 
+    @Basic
+    @Column(name = "isdone", nullable = true)
+    public Integer getIsdone() {
+        return mIsdone;
+    }
+
+    public void setIsdone(Integer isdone) {
+        mIsdone = isdone;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ListEntity entity = (ListEntity) o;
+        ListEntity that = (ListEntity) o;
 
-        if (mId != entity.mId) return false;
-        if (mClassifyid != entity.mClassifyid) return false;
-        if (mDetail != null ? !mDetail.equals(entity.mDetail) : entity.mDetail != null)
-            return false;
-        if (mUserid != null ? !mUserid.equals(entity.mUserid) : entity.mUserid != null)
-            return false;
+        if (mId != that.mId) return false;
+        if (mClassifyid != that.mClassifyid) return false;
+        if (mDetail != null ? !mDetail.equals(that.mDetail) : that.mDetail != null) return false;
+        if (mUserid != null ? !mUserid.equals(that.mUserid) : that.mUserid != null) return false;
+        if (mIsdone != null ? !mIsdone.equals(that.mIsdone) : that.mIsdone != null) return false;
 
         return true;
     }
@@ -83,6 +93,7 @@ public class ListEntity {
         result = 31 * result + (int) (mClassifyid ^ (mClassifyid >>> 32));
         result = 31 * result + (mDetail != null ? mDetail.hashCode() : 0);
         result = 31 * result + (mUserid != null ? mUserid.hashCode() : 0);
+        result = 31 * result + (mIsdone != null ? mIsdone.hashCode() : 0);
         return result;
     }
 }

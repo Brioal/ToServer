@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 /**
  * 加载任务列表
  * email:brioal@foxmail.com
@@ -32,15 +34,29 @@ class TodoController {
      */
     @RequestMapping("/todo/add")
     public @ResponseBody
-    ResultEntity<ListEntity> addTodo(@RequestParam("detail") String detail, @RequestParam("classifyid") long classifyID, @RequestParam("userid") long userId) {
+    ResultEntity<ListEntity> addTodo(@RequestParam("detail") String detail, @RequestParam("classifyid") long classifyID, @RequestParam("userid") long userId, @RequestParam("isdone") int isdone, @RequestParam("todoid") long todoid) {
+        System.out.println("TodoAdd:" + "classifyid=" + classifyID
+                + "detail=" + detail
+                + "userid=" + userId
+                + "isdone=" + isdone);
         ResultEntity<ListEntity> resultEntity = new ResultEntity<>();
         try {
             ListEntity entity = new ListEntity();
             entity.setDetail(detail);
             entity.setClassifyid(classifyID);
             entity.setUserid(userId);
-            entity.setId(System.currentTimeMillis());
-            ListEntity returnEntity = mListRepository.saveAndFlush(entity);
+            entity.setId(todoid);
+            entity.setIsdone(isdone);
+            ListEntity exitEntity = mListRepository.findOne(todoid);
+            ListEntity returnEntity = null;
+            if (exitEntity.equals(entity)) {
+                //完全相同
+
+            } else {
+                //不完全相同，比如说isdone
+                mListRepository.delete(todoid);
+                returnEntity = mListRepository.saveAndFlush(entity);
+            }
             if (resultEntity != null) {
                 resultEntity.setData(returnEntity);
                 resultEntity.setSuccess(true);
@@ -105,6 +121,30 @@ class TodoController {
             resultEntity.setErrorMsg(e.getMessage());
             resultEntity.setSuccess(false);
             resultEntity.setData(null);
+        }
+        return resultEntity;
+    }
+
+    /**
+     * 返回所有TOdo任务
+     *
+     * @param userid
+     * @return
+     */
+    @RequestMapping("/todo/list")
+    public @ResponseBody
+    ResultEntity getAllTodo(@RequestParam("userid") long userid) {
+        ResultEntity resultEntity = new ResultEntity();
+        try {
+            List<ListEntity> list = mListRepository.findAllByUserid(userid);
+            resultEntity.setData(list);
+            resultEntity.setSuccess(true);
+            resultEntity.setErrorMsg(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultEntity.setData(null);
+            resultEntity.setErrorMsg(e.getMessage());
+            resultEntity.setSuccess(false);
         }
         return resultEntity;
     }

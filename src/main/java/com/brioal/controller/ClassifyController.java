@@ -61,7 +61,7 @@ class ClassifyController {
      */
     @RequestMapping("/classify/add")
     public @ResponseBody
-    ResultEntity<ClassifyEntity> addClassify(@RequestParam("userid") long userid, @RequestParam("name") String name) {
+    ResultEntity<ClassifyEntity> addClassify(@RequestParam("userid") long userid, @RequestParam("name") String name, @RequestParam("id") long id) {
         ResultEntity<ClassifyEntity> resultEntity = new ResultEntity();
         try {
             UserEntity userEntity = mUserRepository.findOne(userid);
@@ -73,7 +73,7 @@ class ClassifyController {
                 ClassifyEntity classifyEntity = new ClassifyEntity();
                 classifyEntity.setName(name);
                 classifyEntity.setUserid(userEntity.getUserid());
-                classifyEntity.setId(System.currentTimeMillis());
+                classifyEntity.setId(id);
                 ClassifyEntity entity = mClassifyRepository.saveAndFlush(classifyEntity);
                 resultEntity.setData(entity);
                 resultEntity.setSuccess(true);
@@ -108,7 +108,7 @@ class ClassifyController {
             } else {
                 result.setData(list);
                 result.setErrorMsg(null);
-                result.setSuccess(false);
+                result.setSuccess(true);
             }
         } catch (Exception e) {
             e.printStackTrace();

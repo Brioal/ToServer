@@ -9,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * email:brioal@foxmail.com
  * github:https://github.com/Brioal
@@ -26,4 +28,11 @@ public interface ListRepository extends JpaRepository<ListEntity, Long> {
     @Transactional
     @Query("update ListEntity todo set todo.detail=:qName where todo.id=:qId")
     void updateTodo(@Param("qName") String title, @Param("qId") long id);
+
+    /**
+     * 获取所有的TOdo
+     * @param userID
+     * @return
+     */
+    public List<ListEntity> findAllByUserid(long userID);
 }
